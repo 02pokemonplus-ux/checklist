@@ -270,9 +270,9 @@
 <div class="modal-mask" id="modalMask">
   <div class="modal">
     <h3>雲端同步設定</h3>
-    <p>輸入一組只有你知道的「通關密語」，在任何裝置輸入同一句，就能同步你的勾選與註記。請設定 20 字以上、好記但別人猜不到的句子（例如一句只有你懂的話）。</p>
-    <input type="text" id="passInput" placeholder="例如：我2026春天要去鎌倉唸日文學校" autocomplete="off">
-    <div class="hint" id="passHint">目前 0 字，還需要 20 字</div>
+    <p>輸入一組只有你知道的「通關密語」，在任何裝置輸入同一句，就能同步你的勾選與註記。請設定 12 字以上、好記但別人猜不到的句子（例如一句只有你懂的話）。</p>
+    <input type="text" id="passInput" placeholder="例如：鎌倉日文留學2026" autocomplete="off">
+    <div class="hint" id="passHint">目前 0 字，還需要 12 字</div>
     <div class="modal-btns">
       <button class="btn-ghost" id="passCancel">取消</button>
       <button class="btn-primary" id="passSave">連線並同步</button>
@@ -676,8 +676,8 @@ function openModal(){ passInput.value=passphrase||''; updateHint(); mask.classLi
 function closeModal(){ mask.classList.remove('show'); }
 function updateHint(){
   const n=passInput.value.trim().length;
-  passHint.textContent = n>=20 ? `目前 ${n} 字，可以連線` : `目前 ${n} 字，還需要 ${20-n} 字`;
-  passHint.style.color = n>=20 ? 'var(--gold)' : '';
+  passHint.textContent = n>=12 ? `目前 ${n} 字，可以連線` : `目前 ${n} 字，還需要 ${12-n} 字`;
+  passHint.style.color = n>=12 ? 'var(--gold)' : '';
 }
 passInput.addEventListener('input', updateHint);
 document.getElementById('syncBtn').addEventListener('click', openModal);
@@ -685,7 +685,7 @@ document.getElementById('passCancel').addEventListener('click', closeModal);
 mask.addEventListener('click', e=>{ if(e.target===mask) closeModal(); });
 document.getElementById('passSave').addEventListener('click', ()=>{
   const p=passInput.value.trim();
-  if(p.length<20){ updateHint(); passInput.focus(); return; }
+  if(p.length<12){ updateHint(); passInput.focus(); return; }
   closeModal();
   connectCloud(p);
 });
