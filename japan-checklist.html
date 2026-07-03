@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本留學手續清單｜鎌倉 × 川崎</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f5f3; --surface:#fff; --border:#e0e0e0;
+    --text:#1a1a1a; --text2:#666; --text3:#999;
+    --gold:#b8860b; --gold-soft:#f0e6cc;
+  }
+  body.dark {
+    --bg:#111110; --surface:#1c1c1a; --border:#2e2e2b;
+    --text:#f0ede8; --text2:#a8a69e; --text3:#777;
+    --gold:#d4a94e; --gold-soft:#3a3320;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:'Noto Sans TC',-apple-system,'PingFang TC',sans-serif;
+    background:var(--bg); color:var(--text);
+    min-height:100vh; padding:40px 20px 60px;
+    transition:background .2s,color .2s;
+    line-height:1.7;
+  }
+  .container { max-width:760px; margin:0 auto; }
+
+  header { position:relative; margin-bottom:30px; }
+  .toolbar { position:absolute; top:0; right:0; display:flex; gap:8px; }
+  .tool-btn {
+    width:34px; height:34px; border-radius:50%;
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text2); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s,color .15s;
+  }
+  .tool-btn:hover { border-color:var(--gold); color:var(--text); }
+  .tool-btn:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+  .tool-btn svg { display:block; }
+
+  header h1 {
+    font-weight:700; font-size:clamp(26px,5.5vw,38px);
+    letter-spacing:.02em; padding-right:120px;
+  }
+  header p.sub { margin-top:8px; color:var(--text2); font-size:13px; }
+
+  .progress-wrap { margin-top:22px; }
+  .progress-label {
+    display:flex; justify-content:space-between;
+    font-size:12px; color:var(--text2); margin-bottom:7px; letter-spacing:.04em;
+  }
+  .progress-bar { height:3px; background:var(--border); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gold); width:0%; transition:width .4s ease; }
+
+  .phase { margin-top:34px; }
+  .phase-head { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .phase-num { font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.1em; white-space:nowrap; }
+  .phase-title { font-weight:700; font-size:19px; letter-spacing:.02em; }
+  .phase-note { font-size:12.5px; color:var(--text2); margin-bottom:14px; }
+
+  .grid { display:grid; grid-template-columns:1fr; gap:10px; }
+
+  .card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden;
+    transition:border-color .15s,transform .15s;
+  }
+  .card:hover { border-color:var(--gold); }
+  .card.done { opacity:.62; }
+  .card.done .card-title { text-decoration:line-through; text-decoration-thickness:1px; color:var(--text2); }
+
+  .card-head {
+    display:flex; align-items:flex-start; gap:14px;
+    padding:16px 20px; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .check {
+    flex:none; width:24px; height:24px; margin-top:1px;
+    border:1.5px solid var(--text3); border-radius:50%;
+    position:relative; transition:border-color .2s,background .2s;
+  }
+  .check:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+  .card.done .check { border-color:var(--gold); background:var(--gold); }
+  .check svg { position:absolute; inset:0; margin:auto; opacity:0; transform:scale(.5); transition:opacity .2s,transform .2s; }
+  .card.done .check svg { opacity:1; transform:scale(1); }
+
+  .card-main { flex:1; min-width:0; }
+  .card-num { font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.06em; display:block; margin-bottom:3px; }
+  .card-title { font-weight:600; font-size:17px; letter-spacing:.01em; }
+  .badges { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .badge {
+    font-size:11px; padding:2px 9px; border-radius:20px;
+    color:var(--text2); border:1px solid var(--border);
+  }
+  .badge.key { color:var(--gold); border-color:var(--gold); background:var(--gold-soft); }
+
+  .toggle { flex:none; color:var(--text3); margin-top:4px; transition:transform .2s; }
+  .card.open .toggle { transform:rotate(180deg); }
+
+  .card-body { display:none; padding:0 20px 20px 58px; font-size:13.5px; }
+  .card.open .card-body { display:block; }
+
+  .sec-label { font-size:11px; font-weight:600; color:var(--gold); letter-spacing:.1em; margin:14px 0 6px; }
+  .card-body ul { list-style:none; }
+  .card-body li { padding-left:15px; position:relative; margin-bottom:4px; color:var(--text); }
+  .card-body li::before { content:""; position:absolute; left:0; top:.72em; width:5px; height:5px; border-radius:50%; background:var(--gold); opacity:.5; }
+
+  .tip {
+    background:var(--gold-soft); border-radius:10px;
+    padding:11px 14px; margin-top:13px; font-size:13px; line-height:1.65;
+  }
+  .links { margin-top:6px; display:flex; flex-direction:column; gap:7px; }
+  .links a {
+    color:var(--text); font-size:13px; text-decoration:none;
+    display:flex; align-items:center; gap:8px;
+    width:fit-content; max-width:100%;
+  }
+  .links a .name { border-bottom:1px solid var(--border); padding-bottom:1px; word-break:break-all; transition:border-color .15s; }
+  .links a:hover .name { border-color:var(--gold); }
+  .src-tag {
+    flex:none; font-size:10px; letter-spacing:.06em;
+    color:var(--text2); border:1px solid var(--border);
+    border-radius:4px; padding:1px 6px;
+  }
+  .src-tag.gov { color:var(--gold); border-color:var(--gold); }
+
+  /* 條列模式：收合為單行連結列表 */
+  .grid.list-mode .card-head { padding:12px 18px; }
+  .grid.list-mode .badges { display:none; }
+  .grid.list-mode .card-num { display:inline; margin-bottom:0; margin-right:8px; }
+  .grid.list-mode .card-title { display:inline; font-size:15px; }
+
+  /* 註記區 */
+  .notes { margin-top:16px; }
+  .note-item {
+    display:flex; align-items:flex-start; gap:8px;
+    background:var(--bg); border:1px solid var(--border);
+    border-radius:9px; padding:8px 10px; margin-bottom:6px;
+    font-size:13px; word-break:break-word;
+  }
+  .note-item .note-text { flex:1; min-width:0; line-height:1.6; }
+  .note-item .note-text a { color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold); word-break:break-all; }
+  .note-del {
+    flex:none; background:none; border:none; cursor:pointer;
+    color:var(--text3); font-size:15px; line-height:1; padding:2px 4px;
+    border-radius:4px; transition:color .15s;
+  }
+  .note-del:hover { color:#c0392b; }
+  .note-add { display:flex; gap:8px; margin-top:8px; }
+  .note-add textarea {
+    flex:1; resize:vertical; min-height:38px; max-height:160px;
+    font-family:inherit; font-size:13px; line-height:1.6;
+    color:var(--text); background:var(--surface);
+    border:1px solid var(--border); border-radius:9px; padding:8px 10px;
+  }
+  .note-add textarea:focus { outline:none; border-color:var(--gold); }
+  .note-add-btn {
+    flex:none; align-self:stretch; padding:0 16px;
+    font-family:inherit; font-size:13px; font-weight:600;
+    color:#fff; background:var(--gold); border:none;
+    border-radius:9px; cursor:pointer; transition:opacity .15s;
+  }
+  .note-add-btn:hover { opacity:.88; }
+  .note-empty { font-size:12.5px; color:var(--text3); font-style:normal; }
+
+  /* 同步狀態列 */
+  .sync-bar {
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    margin-top:16px; padding:10px 14px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; font-size:12.5px; color:var(--text2);
+  }
+  .sync-dot { width:8px; height:8px; border-radius:50%; flex:none; background:var(--text3); transition:background .2s; }
+  .sync-dot.on { background:#3a9d5d; }
+  .sync-dot.off { background:#c0392b; }
+  .sync-dot.wait { background:var(--gold); }
+  .sync-text { flex:1; min-width:120px; }
+  .sync-btn {
+    flex:none; font-family:inherit; font-size:12px;
+    color:var(--gold); background:none; border:1px solid var(--border);
+    border-radius:16px; padding:4px 12px; cursor:pointer; transition:border-color .15s;
+  }
+  .sync-btn:hover { border-color:var(--gold); }
+
+  /* 設定彈窗 */
+  .modal-mask {
+    position:fixed; inset:0; background:rgba(0,0,0,.5);
+    display:none; align-items:center; justify-content:center;
+    padding:20px; z-index:100;
+  }
+  .modal-mask.show { display:flex; }
+  .modal {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:24px; max-width:420px; width:100%;
+  }
+  .modal h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
+  .modal p { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:14px; }
+  .modal input {
+    width:100%; font-family:inherit; font-size:14px;
+    color:var(--text); background:var(--bg);
+    border:1px solid var(--border); border-radius:10px;
+    padding:11px 13px; margin-bottom:6px;
+  }
+  .modal input:focus { outline:none; border-color:var(--gold); }
+  .modal .hint { font-size:11.5px; color:var(--text3); margin-bottom:16px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button {
+    flex:1; font-family:inherit; font-size:14px; font-weight:600;
+    padding:11px; border-radius:10px; cursor:pointer; border:1px solid var(--border);
+  }
+  .btn-primary { color:#fff; background:var(--gold); border-color:var(--gold); }
+  .btn-ghost { color:var(--text2); background:none; }
+
+  footer { text-align:center; margin-top:40px; font-size:12px; color:var(--text3); line-height:1.8; }
+  .reset-inline {
+    background:none; border:none; color:var(--text3);
+    font-family:inherit; font-size:12px; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px;
+  }
+  .reset-inline:hover { color:var(--gold); }
+
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;} }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="toolbar">
+      <button class="tool-btn" id="layout-btn" onclick="toggleLayout()" title="切換顯示模式" aria-label="切換顯示模式">
+        <svg id="icon-list" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="icon-grid" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+      <button class="tool-btn" id="theme-btn" onclick="toggleTheme()" title="切換深色模式" aria-label="切換深色模式">
+        <svg id="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </div>
+    <h1>日本留學手續清單</h1>
+    <p class="sub">鎌倉市居住・川崎語言學校就讀 ── 台灣護照適用版</p>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>完成進度</span><span id="progText">0 / 0</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+    <div class="sync-bar">
+      <span class="sync-dot" id="syncDot"></span>
+      <span class="sync-text" id="syncText">尚未連線雲端，資料僅存本機</span>
+      <button class="sync-btn" id="syncBtn">設定雲端同步</button>
+    </div>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>
+    <p>資訊整理自各官方網站與參考來源，規費與規定可能變動，辦理前請以官方最新公告為準。</p>
+    <p style="margin-top:8px">進度與顯示設定會儲存在本裝置　·　<button class="reset-inline" id="resetBtn">重設進度</button></p>
+  </footer>
+</div>
+
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <h3>雲端同步設定</h3>
+    <p>輸入一組只有你知道的「通關密語」，在任何裝置輸入同一句，就能同步你的勾選與註記。請設定 20 字以上、好記但別人猜不到的句子（例如一句只有你懂的話）。</p>
+    <input type="text" id="passInput" placeholder="例如：我2026春天要去鎌倉唸日文學校" autocomplete="off">
+    <div class="hint" id="passHint">目前 0 字，還需要 20 字</div>
+    <div class="modal-btns">
+      <button class="btn-ghost" id="passCancel">取消</button>
+      <button class="btn-primary" id="passSave">連線並同步</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 連結格式：[名稱, 網址, 類型]  類型：官方 / 中文 / 參考
+const DATA = [
+{
+  phase:"PHASE 01", title:"出發前（在台灣辦妥）", note:"建議出發前一至三個月開始準備。",
+  items:[
+    { id:"coe", num:"01", title:"在留資格認定證明書（COE）＋ 留學簽證",
+      badges:[{t:"開學前 1~3 個月",k:1},{t:"日本台灣交流協會"}],
+      docs:["COE 由語言學校代為向入管申請，收到後再辦簽證","簽證申請書、護照正本、2 吋白底照片","COE 正本＋影本","（依情況）財力證明、就學理由書等，依交流協會要求"],
+      steps:["等學校寄來 COE 正本","備妥文件至日本台灣交流協會台北或高雄事務所送件","約 3~7 個工作天核發，領取貼有簽證的護照"],
+      tip:"COE 有效期限為發行日起 3 個月內須入境，安排機票時要注意。",
+      links:[["日本台灣交流協會（簽證資訊）","https://www.koryu.or.jp/","官方"],["Study in Japan（JASSO 官方留學入口）","https://www.studyinjapan.go.jp/","官方"],["台北駐日經濟文化代表處","https://www.roc-taiwan.org/jp/","官方"]] },
+    { id:"license-trans", num:"02", title:"台灣駕照日文譯本",
+      badges:[{t:"出發前順路辦",k:1},{t:"全台監理站"},{t:"NT$100"}],
+      docs:["身分證正本","台灣駕照正本（須在有效期內，舊式有期限駕照過期要先換新）"],
+      steps:["到任一監理站臨櫃申請（可越區），幾分鐘可領件","與台灣駕照、護照三者搭配，即可在入境日本後 1 年內合法開車"],
+      tip:"台灣的國際駕照在日本不能用，只承認日文譯本。譯本效期跟著駕照走，但可開車期間只有入境起 1 年，之後需換日本駕照（見中長期項目）。",
+      links:[["交通部公路局：台日駕照互惠說明","https://www.thb.gov.tw/cp.aspx?n=251","官方"],["監理服務網：線上申辦日文譯本","https://www.mvdis.gov.tw/m3-emv-drv/driver/jpApply","官方"],["日本台灣交流協會：在日開車 FAQ","https://www.koryu.or.jp/tw/faq/tabid1185.html","官方"],["日文譯本申請流程與新制整理","https://www.holoface.photos/news-detail/japan-driving-license","中文"]] },
+    { id:"hanko", num:"03", title:"準備印章（はんこ）",
+      badges:[{t:"建議行前備妥",k:1}],
+      docs:["一顆直徑約 10~12mm 的圓形印章，刻姓氏或全名（楷書或篆書皆可）","避免橡皮章（銀行不收），選木頭、牛角或塑鋼材質"],
+      steps:["在台灣刻好帶去最方便，或抵日後到印章店、Don Quijote 刻","開銀行戶、部分市役所文件、契約會用到"],
+      tip:"郵局（ゆうちょ）開戶通常需要印章，簽名有時不被接受。",
+      links:[] },
+    { id:"money", num:"04", title:"資金與跨國匯款準備",
+      badges:[{t:"行前規劃",k:1}],
+      docs:["初期現金建議 20~30 萬日圓（開戶前的生活費、規費）","開一個 Wise 或類似跨國匯款帳戶，日後從台灣轉錢便宜"],
+      steps:["台灣的信用卡確認開通海外刷卡與 Apple Pay","記下台灣銀行帳戶的網銀憑證，人在日本也能操作"],
+      tip:"日本銀行帳戶開好之前，市役所規費、刻章、交通都以現金為主。",
+      links:[["Wise 跨國匯款","https://wise.com/tw/","參考"]] },
+    { id:"phone-prep", num:"05", title:"行動網路過渡方案（eSIM／漫遊）",
+      badges:[{t:"行前設定",k:1}],
+      docs:["iPhone 先安裝好日本旅遊 eSIM（30 天量足夠過渡）","保留台灣門號漫遊收簡訊（銀行 OTP 驗證用）"],
+      steps:["抵日第一個月先用 eSIM，等在留卡＋銀行帳戶齊了再辦日本門號"],
+      tip:"台灣門號建議改成最低月租保留，不要直接解約，收台灣銀行與政府簡訊都靠它。",
+      links:[] }
+  ]
+},
+{
+  phase:"PHASE 02", title:"抵達第一週（法定期限最優先）", note:"住民登録有「入住起 14 天內」的法定期限，其他手續都以它為前提。",
+  items:[
+    { id:"zairyu", num:"06", title:"機場領取在留卡",
+      badges:[{t:"入境當天",k:1},{t:"羽田／成田機場"}],
+      docs:["護照（貼有留學簽證）","COE 正本"],
+      steps:["入境審查時當場核發在留卡（羽田、成田、關西、中部等主要機場）","核對姓名、生日、在留資格「留学」與在留期間是否正確","在留卡依法必須隨身攜帶"],
+      tip:"如果打算打工，入境審查時可以當場同時申請資格外活動許可，在機場勾選申請最省事，免去日後跑橫濱入管。",
+      links:[["出入國在留管理廳","https://www.moj.go.jp/isa/","官方"],["入管：新規入國者指南頁","https://www.moj.go.jp/isa/applications/guide/nyuukokukanri07_00045.html","官方"]] },
+    { id:"juminhyo", num:"07", title:"住民登録（轉入届）",
+      badges:[{t:"入住起 14 天內",k:1},{t:"鎌倉市役所 市民課"},{t:"免費"}],
+      docs:["在留卡（持卡辦理即同時完成向法務大臣的住居地申報）","護照（含入境日戳章，證明入境日）","印章（備用）"],
+      steps:["到鎌倉市役所本庁舎 1 階 36 番窗口（御成町 18-10）或腰越・深沢・大船・玉縄各支所","填寫住民異動届，登記後在留卡背面會記載住址","同一趟順便辦：國民健康保險、國民年金、My Number 相關"],
+      tip:"海外轉入的手續部分支所與週六窗口不受理，第一次建議平日去本庁舎一次辦齊。市民課電話：0467-61-3903。",
+      links:[["鎌倉市：住民票の異動手続き","https://www.city.kamakura.kanagawa.jp/shiminka/juidozen.html","官方"],["鎌倉市：辦理地點與時間（本庁舎・各支所）","https://www.city.kamakura.kanagawa.jp/qa/juuminhyou/juuminhyou0007.html","官方"],["Graffer：鎌倉市國外轉入手續指引","https://ttzk.graffer.jp/city-kamakura/move-in/actions/%E5%9B%BD%E5%A4%96%E3%81%8B%E3%82%89%E3%81%AE%E8%BB%A2%E5%85%A5%E5%B1%8A(%E6%9C%AC%E7%B1%8D%E5%9C%B0%E3%81%8C%E9%8E%8C%E5%80%89%E5%B8%82%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E5%90%88)","參考"]] },
+    { id:"kokuho", num:"08", title:"國民健康保險加入",
+      badges:[{t:"與住民登録同天辦",k:1},{t:"市役所本庁 1階10番窗口"}],
+      docs:["在留卡","護照","My Number（若已有）＋本人確認文件"],
+      steps:["在留期間超過 3 個月的外國人依法必須加入","與市民課的住民登録手續同時辦理即可","資格確認書原則郵寄，現場出示護照等可當場領取","保費每年 6 月至翌年 3 月分 10 期繳納，依前年所得計算（留學生第一年通常很便宜）"],
+      tip:"看病自付 3 成。之後若領到 My Number Card 可登錄為保險證使用。保費可設定口座振替（銀行開戶後再回來辦）。",
+      links:[["鎌倉市：国民健康保険の加入と脱退","https://www.city.kamakura.kanagawa.jp/hokennenkin/kokuho-shikaku-kanyudattai.html","官方"],["鎌倉市：保險料の納付","https://www.city.kamakura.kanagawa.jp/hokennenkin/kokuho-noufu.html","官方"],["鎌倉市：保險料の計算方式","https://www.city.kamakura.kanagawa.jp/hokennenkin/kokuho-fuka.html","官方"],["神奈川縣：外國人的國保說明（含多語言窗口）","https://www.pref.kanagawa.jp/docs/n5p/cnt/f420091/index.html","官方"]] },
+    { id:"nenkin", num:"09", title:"國民年金＋學生納付特例",
+      badges:[{t:"20 歲以上必辦",k:1},{t:"市役所 保險年金課"}],
+      docs:["在留卡","學生證或在學證明（申請學生納付特例用）"],
+      steps:["年滿 20 歲、住在日本者依法加入國民年金（每月約 17,000 日圓）","留學生可申請學生納付特例緩繳，核准後在學期間免繳","住民登録同一趟到保險年金課申請即可"],
+      tip:"很多留學生漏掉這項，之後會收到催繳單。記得辦特例申請，語言學校多數為對象校，現場確認即可。",
+      links:[["日本年金機構","https://www.nenkin.go.jp/","官方"]] },
+    { id:"mynumber", num:"10", title:"My Number（個人番號）與卡片申請",
+      badges:[{t:"住登後 2~3 週寄達",k:1},{t:"郵寄／線上申請"},{t:"首發免費"}],
+      docs:["住民登録後會收到個人番号通知書＋卡片申請書","申請卡片：申請書＋大頭照（可用手機線上申請）"],
+      steps:["收到通知書先妥善保存（號碼終身不變）","線上或郵寄申請 My Number Card，約 1 個月後收到領卡通知","攜通知＋在留卡到市役所領卡並設定密碼"],
+      tip:"證券開戶、確定申告、打工報稅都要用到 My Number。強烈建議辦實體卡，之後可當保險證與身分證用。",
+      links:[["My Number Card 總合網站","https://www.kojinbango-card.go.jp/","官方"],["數位廳（My Number 制度說明）","https://www.digital.go.jp/","官方"]] }
+  ]
+},
+{
+  phase:"PHASE 03", title:"第一個月（生活基礎建設）", note:"順序建議：銀行、手機、水電確認、通學定期。",
+  items:[
+    { id:"bank", num:"11", title:"銀行開戶（首選：ゆうちょ銀行）",
+      badges:[{t:"住登後盡快",k:1},{t:"鎌倉市內任一郵局"},{t:"免費"}],
+      docs:["在留卡（背面已記載鎌倉住址）","印章","學生證或在學證明（加分）","My Number（有的話帶著）"],
+      steps:["居留未滿 6 個月時大型銀行常拒收，郵局（ゆうちょ）對留學生最友善","臨櫃填表開戶，當場或數日內領存摺，金融卡約 1~2 週寄達","開通 ゆうちょダイレクト 網銀 App"],
+      tip:"帳戶開好後回頭設定：國保口座振替、水電瓦斯扣款、手機月租扣款。等居留滿 6 個月且有門號後，可再開樂天銀行等網銀。",
+      links:[["ゆうちょ銀行","https://www.jp-bank.japanpost.jp/","官方"]] },
+    { id:"sim", num:"12", title:"日本手機門號",
+      badges:[{t:"銀行開戶後",k:1},{t:"線上申辦"}],
+      docs:["在留卡（住址須與申請一致）","日本銀行帳戶或信用卡（扣款用）","日本能收簡訊的過渡號碼（部分業者需要）"],
+      steps:["留學生常用便宜方案：LINEMO、povo 2.0、IIJmio、樂天 Mobile","iPhone 直接申請 eSIM 最快，當天開通","門號到手後，把 LINE、銀行、各種驗證改綁日本號碼"],
+      tip:"在留期間短（如 1 年 3 個月）時部分業者審核較嚴，被拒就換一家，線上申辦成本低。",
+      links:[["LINEMO","https://www.linemo.jp/","官方"],["povo","https://povo.jp/","官方"],["IIJmio","https://www.iijmio.jp/","官方"],["樂天 Mobile","https://network.mobile.rakuten.co.jp/","官方"]] },
+    { id:"utility", num:"13", title:"水電瓦斯：名義與繳費確認",
+      badges:[{t:"入住當週",k:1},{t:"線上／電話"}],
+      docs:["水道 お客様番号（門口或水表附近的水道ホームメモ上有）","電力與瓦斯的客戶編號（帳單上）"],
+      steps:["鎌倉市的自來水由神奈川県営水道負責：電話 0570-00-5959，或 LINE 加 神奈川県企業庁 線上辦理使用開始","電力（東京電力等）與瓦斯（東京瓦斯等）線上辦理使用開始或名義變更；瓦斯開栓需本人在場","由於住的是自己家：若原本就有供水供電，主要是確認名義人與繳費方式，改成口座振替或信用卡扣款"],
+      tip:"東京電力的「引越れんらく帳」可以一站式同時辦電、瓦斯、県營水道，最省事。",
+      links:[["神奈川県営水道：使用開始手續","https://www.pref.kanagawa.jp/docs/r4a/tetudukigaido/tennyuu.html","官方"],["神奈川県営水道：線上申請窗口","https://www.pref.kanagawa.jp/docs/r4a/densisinsei/main.html","官方"],["東京電力","https://www.tepco.co.jp/","官方"],["東京瓦斯","https://home.tokyo-gas.co.jp/","官方"],["鎌倉市水道手續整理（料金與流程）","https://classlab.co.jp/watersupply/location/kanagawaken/kamakurashi/","參考"]] },
+    { id:"commute", num:"14", title:"通學定期券（鎌倉 ⇄ 川崎）",
+      badges:[{t:"開學前辦好",k:1},{t:"JR 車站"}],
+      docs:["學校核發的通学証明書或蓋章的定期券購入申込書","學生證","在留卡（核對身分）"],
+      steps:["向語言學校申請通學證明（先問學校是否為 JR 指定校，語言學校部分不適用通學定期，只能買通勤定期）","鎌倉／大船 → 川崎：JR 東海道線或橫須賀線，用 Apple Pay 的 Suica 綁定期最方便","iPhone 錢包 App 直接加入 Suica，儲值免排隊"],
+      tip:"若學校非通學定期對象校，改買通勤定期仍比單程票省很多；也可比較橫須賀線與東海道線（大船轉乘）的路徑價差。",
+      links:[["JR 東日本：通学定期券","https://www.jreast.co.jp/","官方"],["Mobile Suica（Apple Pay）","https://www.jreast.co.jp/mobilesuica/","官方"]] },
+    { id:"shikakugai", num:"15", title:"資格外活動許可（打工用）",
+      badges:[{t:"打工前必辦",k:1},{t:"機場入境時／橫濱入管"},{t:"免費"}],
+      docs:["資格外活動許可申請書（入管官網下載）","在留卡","護照"],
+      steps:["最推薦：入境機場領在留卡時當場申請（免排隊免再跑）","錯過機場：到管轄神奈川的橫濱地方出入國在留管理局窗口申請，審查約 2 週至 1 個月","核准後在留卡背面會記載 許可：原則週 28 時間以内"],
+      tip:"上限每週 28 小時（學校長假期間每日 8 小時）。沒許可就打工等於非法就勞，會影響簽證更新甚至強制出境，務必先拿到許可再上工。",
+      links:[["入管：資格外活動許可申請（含申請書下載）","https://www.moj.go.jp/isa/applications/procedures/16-8.html","官方"],["入管：留学的資格外活動許可說明","https://www.moj.go.jp/isa/applications/procedures/nyuukokukanri07_00003.html","官方"],["東京大學：留學生打工規定整理","https://www.u-tokyo.ac.jp/adm/inbound/ja/life-visa-pj.html","參考"],["京都大學：資格外活動許可指引","https://kuiso.oc.kyoto-u.ac.jp/visa/work_permit/","參考"]] },
+    { id:"nhk", num:"16", title:"NHK 受信契約確認",
+      badges:[{t:"有電視就適用",k:1}],
+      docs:["家中若有電視或可收訊設備，依法須有受信契約"],
+      steps:["住自己家：先確認家裡是否已有既存契約（家人名義）","已有契約則不需重複；沒有電視則不需契約"],
+      tip:"NHK 人員上門時不需開門即時決定，可先確認自家契約狀態再處理。",
+      links:[["NHK 受信料窗口","https://www.nhk-cs.jp/jushinryo/","官方"]] }
+  ]
+},
+{
+  phase:"PHASE 04", title:"中長期（駕照・信用卡・投資・稅務）", note:"這些需要前面的基礎（My Number、銀行、居住實績）到位後再辦。",
+  items:[
+    { id:"menkyo", num:"17", title:"換發日本駕照（外免切替）",
+      badges:[{t:"入境 1 年內靠譯本，之後必辦",k:1},{t:"神奈川運転免許センター（二俣川）"}],
+      docs:["台灣駕照正本（有效期內）","駕照日文譯本（監理站、台北駐日代表處或 JAF 發行）","護照（含舊護照，證明取得駕照後在台灣滯留累計 3 個月以上，以出入境章為憑，建議平時出入境台灣不走自動通關）","住民票（記載國籍・在留資格等特定事項全部，6 個月內發行，到鎌倉市役所申請）","在留卡","證件照（3×2.4cm）","手續費（現場繳納）"],
+      steps:["先打電話向神奈川運転免許センター（045-365-3111）預約外免切替並確認文件","持台灣駕照者通過書類審查＋適性檢查（視力等）後，原則免筆試與路考（台灣為互惠免除對象）","注意：2025 年 10 月起外免切替制度全面嚴格化，實際流程以免許センター當下說明為準","地點：橫濱市旭區二俣川，從鎌倉搭橫須賀線轉相鉄線至二俣川站"],
+      tip:"譯本開車效期只有入境起 1 年，長住者請盡早排程換照。換成日本駕照後，它就是最好用的日常身分證件。",
+      links:[["神奈川縣警：外國駕照切替手續","https://www.police.pref.kanagawa.jp/tetsuzuki/menkyo/mes83046.html","官方"],["神奈川縣警：外國籍者受驗須知（2025/10 新制）","https://www.police.pref.kanagawa.jp/tetsuzuki/menkyo/mes83155.html","官方"],["神奈川縣警：運転免許手續總目次","https://www.police.pref.kanagawa.jp/tetsuzuki/menkyo/mes83000.html","官方"],["台北駐大阪處：在日申請日文譯本方式","https://www.roc-taiwan.org/jposa/post/6765.html","官方"],["JAF（日本自動車聯盟）","https://jaf.or.jp/","官方"],["台灣駕照換日本駕照流程整理","https://qoopio.com/driving-license-in-japan/","中文"],["二俣川自動車學校：外國免許切替教習","https://www.futamatagawa-ds.co.jp/foreign.html","參考"]] },
+    { id:"credit", num:"18", title:"日本信用卡 → ETC 卡",
+      badges:[{t:"居留數月後成功率較高",k:1},{t:"線上申辦"}],
+      docs:["在留卡","日本銀行帳戶","日本手機門號","（有打工收入可填，無收入學生也可申請學生友善卡）"],
+      steps:["留學生較易核卡：樂天卡、EPOS 卡（額度低但門檻低）","核卡後在同一卡商網站加辦 ETC 卡（多數免年費或數百日圓）","ETC 卡插入車上機即可走 ETC 車道，過路費常有折扣"],
+      tip:"沒有信用卡也可辦 ETC パーソナルカード（需押金），但年費加押金不划算，建議先拚一張樂天卡。被拒後隔 6 個月再申請。",
+      links:[["樂天卡","https://www.rakuten-card.co.jp/","官方"],["EPOS 卡","https://www.eposcard.co.jp/","官方"]] },
+    { id:"stock", num:"19", title:"證券開戶（日本投資）",
+      badges:[{t:"My Number 到手後",k:1},{t:"線上開戶"},{t:"免費"}],
+      docs:["My Number Card（或通知書＋在留卡）","在留卡","日本銀行帳戶","部分券商要求在留期間剩餘 6 個月以上或居住滿一定期間"],
+      steps:["常見選擇：SBI 證券、樂天證券（跟樂天銀行、樂天卡生態整合佳）","線上上傳在留卡＋My Number，約 1~2 週開通","注意：留學生報稅身分（居住者）下，股利與獲利在日本課稅；NISA 免稅帳戶外國人居住者也可開"],
+      tip:"若之後回台灣定居，帳戶多數需結清或轉為非居住者受限狀態，投資期程要納入考量。台灣的證券戶與複委託不受影響，可並行。",
+      links:[["SBI 證券","https://www.sbisec.co.jp/","官方"],["樂天證券","https://www.rakuten-sec.co.jp/","官方"]] },
+    { id:"tax", num:"20", title:"稅務：年末調整／確定申告・住民稅",
+      badges:[{t:"每年 2/16~3/15 申告期",k:1},{t:"線上 e-Tax／藤澤稅務署"}],
+      docs:["源泉徵收票（打工的店家年底發）","My Number","在留卡","國保繳費證明（可列入所得控除）"],
+      steps:["打工只有一份且店家有做年末調整則原則不用自己申告","多份打工、或店家沒做年末調整，隔年 2/16~3/15 自行確定申告（e-Tax 線上可辦，鎌倉市管轄為藤澤稅務署）","住民稅依前一年所得課徵，留學第一年多半為 0；有打工後隔年 6 月起可能收到通知","台日租稅協定：留學生打工所得有一定免稅安排，申告時可查 租稅條約に関する届出書"],
+      tip:"就算收入低到不用繳稅，做確定申告常常可以退回被預扣的源泉所得稅，值得花一小時線上辦。",
+      links:[["國稅廳（確定申告）","https://www.nta.go.jp/","官方"],["e-Tax","https://www.e-tax.nta.go.jp/","官方"]] },
+    { id:"points", num:"21", title:"點數卡・行動支付生態",
+      badges:[{t:"隨用隨辦",k:1}],
+      docs:["日本手機門號（App 註冊用）","日本銀行帳戶或信用卡（儲值）"],
+      steps:["交通與小額支付：Apple Pay 的 Suica（已在通學定期項目辦好）","主流行動支付：PayPay（覆蓋率最高）、樂天 Pay","點數三大生態擇一深耕：樂天點數（配樂天卡、證券最強）、d POINT、Ponta","超商藥妝常用：辦一張 V Point 或直接綁 App"],
+      tip:"以你的組合（樂天卡＋樂天證券）走樂天經濟圈點數回饋最集中，不用每家都辦。",
+      links:[["PayPay","https://paypay.ne.jp/","官方"],["樂天 Point Club","https://point.rakuten.co.jp/","官方"]] },
+    { id:"emergency", num:"22", title:"緊急聯絡與駐日單位登錄",
+      badges:[{t:"抵日後隨時",k:1}],
+      docs:["警察 110／火災救護 119（可要求中文翻譯）","台北駐日經濟文化代表處 橫濱分處（管轄神奈川縣）"],
+      steps:["把橫濱分處電話存進手機：045-641-7736~8（急難救助另有專線）","到外交部出國登錄網站登錄旅外資料，急難時好聯繫","鎌倉市災害資訊：記住住家附近的指定避難所位置"],
+      tip:"神奈川縣多語言支援中心與鎌倉市網站皆有中文頁面，遇到行政問題可先查中文版。",
+      links:[["台北駐日經濟文化代表處","https://www.roc-taiwan.org/jp/","官方"],["外交部領事事務局（出國登錄）","https://www.boca.gov.tw/","官方"],["鎌倉市官網（多語言）","https://www.city.kamakura.kanagawa.jp/","官方"]] }
+  ]
+}
+];
+
+const CHECK_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const CHEV_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+const app = document.getElementById('app');
+
+// ── 資料模型 ──────────────────────────────
+// state.done : { itemId: true }
+// state.notes: { itemId: [ {id, text, ts}, ... ] }
+let state = { done:{}, notes:{} };
+function isDone(id){ return !!state.done[id]; }
+function getNotes(id){ return state.notes[id] || []; }
+
+// ── Firebase 同步狀態 ─────────────────────
+const FB_CONFIG = {
+  apiKey: "AIzaSyDxaFt7Nfct1rtjGHrcs8yP-mRVAAwdZ-Q",
+  authDomain: "japan-checklist-4c300.firebaseapp.com",
+  projectId: "japan-checklist-4c300",
+  storageBucket: "japan-checklist-4c300.firebasestorage.app",
+  messagingSenderId: "753120723423",
+  appId: "1:753120723423:web:e342af1cf988f02b10c46a"
+};
+let db=null, passphrase=null, unsub=null, applyingRemote=false, saveTimer=null;
+
+function setSync(status, text){
+  const dot=document.getElementById('syncDot');
+  const txt=document.getElementById('syncText');
+  dot.className='sync-dot'+(status?(' '+status):'');
+  if(text) txt.textContent=text;
+}
+
+// ── 本機儲存（雲端未連線時的後備）──────────
+function loadLocal(){
+  try{
+    const r=localStorage.getItem('jp-checklist-state');
+    if(r){ state=JSON.parse(r); state.done=state.done||{}; state.notes=state.notes||{}; }
+    else {
+      // 相容舊版：把舊的 doneSet 陣列搬進來
+      const old=localStorage.getItem('jp-checklist-v1');
+      if(old){ JSON.parse(old).forEach(id=>state.done[id]=true); }
+    }
+  }catch(e){}
+}
+function saveLocal(){ try{ localStorage.setItem('jp-checklist-state', JSON.stringify(state)); }catch(e){} }
+
+// ── 雲端寫入（去抖動，1 秒內多次變更只寫一次）──
+function persist(){
+  saveLocal();
+  if(!db || !passphrase || applyingRemote) return;
+  setSync('wait','儲存中…');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    db.collection('checklists').doc(passphrase).set(state)
+      .then(()=>setSync('on','已同步到雲端'))
+      .catch(err=>{ setSync('off','同步失敗：'+(err.code||err.message)); });
+  }, 800);
+}
+
+// 對外統一用 persist() 取代舊的 saveProgress()
+function saveProgress(){ persist(); }
+function loadProgress(){ loadLocal(); }
+
+function render(){
+  app.innerHTML='';
+  DATA.forEach(phase=>{
+    const sec=document.createElement('section');
+    sec.className='phase';
+    sec.innerHTML=`<div class="phase-head"><span class="phase-num">${phase.phase}</span><span class="phase-title">${phase.title}</span></div><p class="phase-note">${phase.note}</p>`;
+    const grid=document.createElement('div');
+    grid.className='grid'+(layoutList?' list-mode':'');
+    grid.setAttribute('data-grid','');
+    phase.items.forEach(it=>{
+      const el=document.createElement('article');
+      el.className='card'+(isDone(it.id)?' done':'');
+      el.dataset.id=it.id;
+      const badges=it.badges.map(b=>`<span class="badge ${b.k?'key':''}">${b.t}</span>`).join('');
+      const docs=it.docs.map(d=>`<li>${d}</li>`).join('');
+      const steps=it.steps.map(s=>`<li>${s}</li>`).join('');
+      const links=it.links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener"><span class="src-tag ${l[2]==='官方'?'gov':''}">${l[2]}</span><span class="name">${l[0]}</span></a>`).join('');
+      el.innerHTML=`
+        <div class="card-head">
+          <div class="check" role="checkbox" aria-checked="${isDone(it.id)}" tabindex="0" aria-label="標記完成：${it.title}">${CHECK_SVG}</div>
+          <div class="card-main">
+            <span class="card-num">${it.num}</span>
+            <span class="card-title">${it.title}</span>
+            <div class="badges">${badges}</div>
+          </div>
+          <div class="toggle">${CHEV_SVG}</div>
+        </div>
+        <div class="card-body">
+          <div class="sec-label">必要文件</div><ul>${docs}</ul>
+          <div class="sec-label">辦理步驟</div><ul>${steps}</ul>
+          ${it.tip?`<div class="tip">${it.tip}</div>`:''}
+          ${links?`<div class="sec-label">情報來源</div><div class="links">${links}</div>`:''}
+          <div class="sec-label">我的註記</div>
+          <div class="notes" data-notes="${it.id}"></div>
+          <div class="note-add">
+            <textarea data-noteinput="${it.id}" rows="1" placeholder="貼上連結或輸入資料，例如預約網址、承辦電話、繳費金額…"></textarea>
+            <button class="note-add-btn" data-noteadd="${it.id}">新增</button>
+          </div>
+        </div>`;
+      grid.appendChild(el);
+    });
+    sec.appendChild(grid);
+    app.appendChild(sec);
+  });
+  renderAllNotes();
+  updateProgress();
+}
+
+// 把連結文字轉成可點的 <a>，其餘做 HTML 轉義
+function escapeHtml(s){ return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function linkify(text){
+  const esc=escapeHtml(text);
+  return esc.replace(/(https?:\/\/[^\s]+)/g, u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`).replace(/\n/g,'<br>');
+}
+function renderNotes(id){
+  const box=document.querySelector(`[data-notes="${id}"]`);
+  if(!box) return;
+  const list=getNotes(id);
+  if(!list.length){ box.innerHTML='<div class="note-empty">尚無註記</div>'; return; }
+  box.innerHTML=list.map(n=>
+    `<div class="note-item"><div class="note-text">${linkify(n.text)}</div><button class="note-del" data-notedel="${id}" data-nid="${n.id}" title="刪除">×</button></div>`
+  ).join('');
+}
+function renderAllNotes(){ DATA.forEach(p=>p.items.forEach(it=>renderNotes(it.id))); }
+
+function updateProgress(){
+  const total=DATA.reduce((n,p)=>n+p.items.length,0);
+  const done=Object.keys(state.done).filter(k=>state.done[k]).length;
+  document.getElementById('progText').textContent=`${done} / ${total}`;
+  document.getElementById('progFill').style.width=(total?done/total*100:0)+'%';
+}
+
+function addNote(id, text){
+  text=text.trim(); if(!text) return;
+  if(!state.notes[id]) state.notes[id]=[];
+  state.notes[id].push({ id:'n'+Date.now()+Math.random().toString(36).slice(2,6), text, ts:Date.now() });
+  renderNotes(id); persist();
+}
+function delNote(id, nid){
+  if(!state.notes[id]) return;
+  state.notes[id]=state.notes[id].filter(n=>n.id!==nid);
+  if(!state.notes[id].length) delete state.notes[id];
+  renderNotes(id); persist();
+}
+
+app.addEventListener('click',e=>{
+  const cb=e.target.closest('.check');
+  const del=e.target.closest('[data-notedel]');
+  const addBtn=e.target.closest('[data-noteadd]');
+  const head=e.target.closest('.card-head');
+  if(cb){
+    const card=cb.closest('.card'); const id=card.dataset.id;
+    if(isDone(id)) delete state.done[id]; else state.done[id]=true;
+    card.classList.toggle('done');
+    cb.setAttribute('aria-checked',isDone(id));
+    saveProgress(); updateProgress();
+  }else if(del){
+    delNote(del.dataset.notedel, del.dataset.nid);
+  }else if(addBtn){
+    const id=addBtn.dataset.noteadd;
+    const ta=document.querySelector(`[data-noteinput="${id}"]`);
+    addNote(id, ta.value); ta.value='';
+  }else if(head){
+    head.closest('.card').classList.toggle('open');
+  }
+});
+app.addEventListener('keydown',e=>{
+  if((e.key===' '||e.key==='Enter')&&e.target.classList.contains('check')){ e.preventDefault(); e.target.click(); }
+  // 註記輸入框：Ctrl/Cmd + Enter 送出
+  if(e.target.matches('[data-noteinput]') && (e.ctrlKey||e.metaKey) && e.key==='Enter'){
+    const id=e.target.getAttribute('data-noteinput');
+    addNote(id, e.target.value); e.target.value='';
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('確定要清除所有勾選與註記嗎？此動作會同步到雲端，無法復原。')){
+    state={ done:{}, notes:{} };
+    saveProgress(); render();
+  }
+});
+
+// 主題
+function toggleTheme(){
+  const dark=document.body.classList.toggle('dark');
+  document.getElementById('icon-moon').style.display=dark?'none':'';
+  document.getElementById('icon-sun').style.display=dark?'':'none';
+  try{ localStorage.setItem('jp-checklist-dark',dark?'1':'0'); }catch(e){}
+}
+// 版面
+let layoutList=false;
+function toggleLayout(){
+  layoutList=!layoutList;
+  document.querySelectorAll('[data-grid]').forEach(g=>g.classList.toggle('list-mode',layoutList));
+  document.getElementById('icon-list').style.display=layoutList?'':'none';
+  document.getElementById('icon-grid').style.display=layoutList?'none':'';
+  try{ localStorage.setItem('jp-checklist-layout',layoutList?'list':'grid'); }catch(e){}
+}
+
+// ── Firebase 連線 ─────────────────────────
+function connectCloud(pass){
+  if(typeof firebase==='undefined'){ setSync('off','無法載入 Firebase（請檢查網路）'); return; }
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    db=firebase.firestore();
+  }catch(e){ setSync('off','Firebase 初始化失敗'); return; }
+  passphrase=pass;
+  try{ localStorage.setItem('jp-checklist-pass', pass); }catch(e){}
+  setSync('wait','連線中…');
+  if(unsub) unsub();
+  // 即時監聽：任何裝置更新都會即時反映
+  unsub=db.collection('checklists').doc(pass).onSnapshot(doc=>{
+    if(doc.exists){
+      applyingRemote=true;
+      const d=doc.data();
+      state={ done:d.done||{}, notes:d.notes||{} };
+      saveLocal();
+      render();
+      applyingRemote=false;
+      setSync('on','已同步到雲端');
+    }else{
+      // 雲端還沒有資料 → 把本機現有資料推上去當初始
+      setSync('on','已連線，首次建立雲端資料');
+      persist();
+    }
+  }, err=>{
+    setSync('off','連線失敗：'+(err.code||err.message));
+  });
+}
+
+// ── 彈窗控制 ──────────────────────────────
+const mask=document.getElementById('modalMask');
+const passInput=document.getElementById('passInput');
+const passHint=document.getElementById('passHint');
+function openModal(){ passInput.value=passphrase||''; updateHint(); mask.classList.add('show'); passInput.focus(); }
+function closeModal(){ mask.classList.remove('show'); }
+function updateHint(){
+  const n=passInput.value.trim().length;
+  passHint.textContent = n>=20 ? `目前 ${n} 字，可以連線` : `目前 ${n} 字，還需要 ${20-n} 字`;
+  passHint.style.color = n>=20 ? 'var(--gold)' : '';
+}
+passInput.addEventListener('input', updateHint);
+document.getElementById('syncBtn').addEventListener('click', openModal);
+document.getElementById('passCancel').addEventListener('click', closeModal);
+mask.addEventListener('click', e=>{ if(e.target===mask) closeModal(); });
+document.getElementById('passSave').addEventListener('click', ()=>{
+  const p=passInput.value.trim();
+  if(p.length<20){ updateHint(); passInput.focus(); return; }
+  closeModal();
+  connectCloud(p);
+});
+
+function init(){
+  let dark=null;
+  try{ dark=localStorage.getItem('jp-checklist-dark'); }catch(e){}
+  if(dark===null){ dark=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'1':'0'; }
+  if(dark==='1'){ document.body.classList.add('dark'); document.getElementById('icon-moon').style.display='none'; document.getElementById('icon-sun').style.display=''; }
+  try{ if(localStorage.getItem('jp-checklist-layout')==='list'){ layoutList=true; document.getElementById('icon-list').style.display=''; document.getElementById('icon-grid').style.display='none'; } }catch(e){}
+  loadProgress();
+  render();
+  // 若這台裝置先前設過通關密語，自動重連
+  let savedPass=null;
+  try{ savedPass=localStorage.getItem('jp-checklist-pass'); }catch(e){}
+  if(savedPass){ connectCloud(savedPass); }
+  else{ setSync('','尚未連線雲端，資料僅存本機'); }
+}
+init();
+</script>
+</body>
+</html>
